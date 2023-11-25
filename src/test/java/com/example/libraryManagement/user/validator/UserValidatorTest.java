@@ -14,9 +14,9 @@ import static org.assertj.core.api.Assertions.*;
 class UserValidatorTest {
 
     @ParameterizedTest
-    @DisplayName("정상적인 이메일 입력 시")
+    @DisplayName("유저 회원가입 검증 성공")
     @ValueSource(strings = {"a@a.com", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@aaaaa.com"})
-    void validate(final String value) {
+    void validateRegister(final String value) {
         FakeContainer fakeContainer = new FakeContainer();
 
         User user = User.builder()
@@ -26,9 +26,31 @@ class UserValidatorTest {
         fakeContainer.userValidator.validateRegister(user);
     }
 
+    @Test
+    @DisplayName("이메일을 입력하지 않았을 경우 예외 발생")
+    void validateRegisterFailedByEmptyEmail() {
+        FakeContainer fakeContainer = new FakeContainer();
+
+        User emailNullUser = User.builder().build();
+        User emptyEmailUser = User.builder()
+                .email("").build();
+
+        assertThatThrownBy(() ->
+                fakeContainer.userValidator.validateRegister(emailNullUser)
+        )
+                .isInstanceOf(UserException.class)
+                .hasMessage(USER_EMAIL_EMPTY.getMessage());
+
+        assertThatThrownBy(() ->
+                fakeContainer.userValidator.validateRegister(emptyEmailUser)
+        )
+                .isInstanceOf(UserException.class)
+                .hasMessage(USER_EMAIL_EMPTY.getMessage());
+    }
+
     @ParameterizedTest
     @DisplayName("올바르지 않은 형태의 이메일 입력 시 예외 발생")
-    @ValueSource(strings = {"", "a.com", "a@a", "@a.com", "a@.com", "a@a."})
+    @ValueSource(strings = {"a.com", "a@a", "@a.com", "a@.com", "a@a."})
     void validateFail(final String value) {
         FakeContainer fakeContainer = new FakeContainer();
 

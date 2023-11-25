@@ -3,6 +3,7 @@ package com.example.libraryManagement.mock.repository;
 import com.example.libraryManagement.user.domain.User;
 import com.example.libraryManagement.user.service.port.UserRepository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -19,6 +20,7 @@ public class UserFakeRepository implements UserRepository {
                 .userId(sequence++)
                 .email(user.getEmail())
                 .generatedDate(user.getGeneratedDate())
+                .bookList(new ArrayList<>())
                 .build();
         data.put(entity.getUserId(), entity);
         return entity;

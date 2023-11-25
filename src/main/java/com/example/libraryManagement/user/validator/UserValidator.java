@@ -6,6 +6,7 @@ import com.example.libraryManagement.user.exception.UserException;
 import com.example.libraryManagement.user.service.port.UserRepository;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 
@@ -23,6 +24,9 @@ public class UserValidator {
     }
 
     private void validateEmail(final String email) {
+        if (isEmpty(email)) {
+            throw new UserException(USER_EMAIL_EMPTY);
+        }
         String regex = "^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$";
         if (!email.matches(regex)) {
             throw new UserException(USER_EMAIL_INVALID);
@@ -31,5 +35,9 @@ public class UserValidator {
         if (optionalUser.isPresent()) {
             throw new UserException(USER_EMAIL_DUPLICATION);
         }
+    }
+
+    private boolean isEmpty(final String value) {
+        return !StringUtils.hasText(value);
     }
 }
