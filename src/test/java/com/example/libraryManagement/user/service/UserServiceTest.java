@@ -18,7 +18,10 @@ class UserServiceTest {
         FakeContainer fakeContainer = new FakeContainer();
 
 //        회원가입
-        UserRegisterRequest request = new UserRegisterRequest("example@example.com");
+        UserRegisterRequest request = UserRegisterRequest.builder()
+                .email("example@example.com")
+                .build();
+
         Long savedId = fakeContainer.userService.register(request);
 
 //        검증

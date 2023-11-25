@@ -1,9 +1,12 @@
 package com.example.libraryManagement.user.domain;
 
+import com.example.libraryManagement.book.domain.Book;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -23,6 +26,9 @@ public class User {
 
     @Column(name = "generated_date")
     private LocalDateTime generatedDate;
+
+    @OneToMany(mappedBy = "registrant")
+    private List<Book> bookList = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {
