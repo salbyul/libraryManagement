@@ -45,6 +45,14 @@ public class Book {
         this.isbn = isbn;
     }
 
+    public boolean isLent() {
+        return this.state.isLent();
+    }
+
+    public void lend() {
+        this.state = BookState.LENT;
+    }
+
     @PrePersist
     public void prePersist() {
         this.generatedDate = LocalDateTime.now();

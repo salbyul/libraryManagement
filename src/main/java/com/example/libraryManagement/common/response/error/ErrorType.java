@@ -15,7 +15,11 @@ public enum ErrorType {
     BOOK_NAME_EMPTY("책의 이름은 필수입니다."),
     BOOK_ISBN_EMPTY("책의 ISBN은 필수입니다."),
     BOOK_ISBN_DUPLICATION("책의 ISBN이 중복됩니다."),
-    BOOK_FORBIDDEN("권한이 없습니다.");
+    BOOK_FORBIDDEN("권한이 없습니다."),
+    BOOK_ALREADY_LENT("이미 대출이 된 책입니다."),
+
+//    LentHistory
+    LENT_HISTORY_NOT_FOUND("해당 대출 이력이 존재하지 않습니다.");
 
     private final String message;
 
