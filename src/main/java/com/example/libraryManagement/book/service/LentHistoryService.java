@@ -27,6 +27,7 @@ public class LentHistoryService {
     public Long lend(final String email, final Long bookId) {
         User user = getUserByEmail(email);
         Book book = getBookByBookId(bookId);
+        book.lend();
 
         LentHistory lentHistory = LentHistory.builder()
                 .user(user)
