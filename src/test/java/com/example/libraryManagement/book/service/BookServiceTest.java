@@ -265,4 +265,161 @@ class BookServiceTest {
                 .isInstanceOf(BookException.class)
                 .hasMessage(BOOK_ALREADY_LENT.getMessage());
     }
+
+    @Test
+    @DisplayName("성공적인 도서 반납")
+    void returnBook() {
+        FakeContainer fakeContainer = new FakeContainer();
+
+//        유저 생성
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder()
+                .email("a@a.com")
+                .build();
+        fakeContainer.userService.register(userRegisterRequest);
+
+//        도서 생성
+        BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
+                .name("너에게 하고 싶은 말")
+                .isbn("9791191043235")
+                .build();
+        Long savedBookId = fakeContainer.bookService.register(userRegisterRequest.getEmail(), bookRegisterRequest);
+
+//        도서 대출
+        fakeContainer.bookService.lend(userRegisterRequest.getEmail(), savedBookId);
+
+//        도서 반납
+        fakeContainer.bookService.returnBook(userRegisterRequest.getEmail(), savedBookId);
+
+//        검증
+        Book book = fakeContainer.bookRepository.findById(savedBookId)
+                .orElseThrow(() -> new BookException(BOOK_NOT_FOUND));
+        LentHistory lentHistory = fakeContainer.lentHistoryRepository.findByBookId(savedBookId).get(0);
+
+        assertThat(book.isLent()).isFalse();
+        assertThat(lentHistory.getReturnDate()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 유저의 도서 반납 시 예외 발생")
+    void returnBookFailedByNotExistUser() {
+        FakeContainer fakeContainer = new FakeContainer();
+
+//        유저 생성
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder()
+                .email("a@a.com")
+                .build();
+        fakeContainer.userService.register(userRegisterRequest);
+
+//        도서 생성
+        BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
+                .name("너에게 하고 싶은 말")
+                .isbn("9791191043235")
+                .build();
+        Long savedBookId = fakeContainer.bookService.register(userRegisterRequest.getEmail(), bookRegisterRequest);
+
+//        도서 대출
+        fakeContainer.bookService.lend(userRegisterRequest.getEmail(), savedBookId);
+
+//        도서 반납
+        assertThatThrownBy(() ->
+                fakeContainer.bookService.returnBook("asdfasdf@asdfadf.com", savedBookId)
+        )
+                .isInstanceOf(BookException.class)
+                .hasMessage(USER_NOT_FOUND.getMessage());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 도서 반납 시 예외 발생")
+    void returnBookFailedByNotExistBook() {
+        FakeContainer fakeContainer = new FakeContainer();
+
+//        유저 생성
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder()
+                .email("a@a.com")
+                .build();
+        fakeContainer.userService.register(userRegisterRequest);
+
+//        도서 생성
+        BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
+                .name("너에게 하고 싶은 말")
+                .isbn("9791191043235")
+                .build();
+        Long savedBookId = fakeContainer.bookService.register(userRegisterRequest.getEmail(), bookRegisterRequest);
+
+//        도서 대출
+        fakeContainer.bookService.lend(userRegisterRequest.getEmail(), savedBookId);
+
+//        도서 반납
+        assertThatThrownBy(() ->
+                fakeContainer.bookService.returnBook(userRegisterRequest.getEmail(), -1L)
+        )
+                .isInstanceOf(BookException.class)
+                .hasMessage(BOOK_NOT_FOUND.getMessage());
+    }
+
+    @Test
+    @DisplayName("대출되지 않은 도서 반납 시 예외 발생")
+    void returnBookFailedByNotLendBook() {
+        FakeContainer fakeContainer = new FakeContainer();
+
+//        유저 생성
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder()
+                .email("a@a.com")
+                .build();
+        fakeContainer.userService.register(userRegisterRequest);
+
+//        도서 생성
+        BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
+                .name("너에게 하고 싶은 말")
+                .isbn("9791191043235")
+                .build();
+        Long savedBookId = fakeContainer.bookService.register(userRegisterRequest.getEmail(), bookRegisterRequest);
+
+//        도서 반납
+        assertThatThrownBy(() ->
+                fakeContainer.bookService.returnBook(userRegisterRequest.getEmail(), savedBookId)
+        )
+                .isInstanceOf(BookException.class)
+                .hasMessage(BOOK_NOT_LEND.getMessage());
+    }
+
+    @Test
+    @DisplayName("대출 이력이 존재하지 않는 도서 반납 시 예외 발생")
+    void returnBookFailedByNotExistLentHistory() {
+        FakeContainer fakeContainer = new FakeContainer();
+
+//        유저 생성
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder()
+                .email("a@a.com")
+                .build();
+        fakeContainer.userService.register(userRegisterRequest);
+
+        UserRegisterRequest userRegisterRequest2 = UserRegisterRequest.builder()
+                .email("b@b.com")
+                .build();
+        fakeContainer.userService.register(userRegisterRequest2);
+
+//        도서 생성
+        BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
+                .name("너에게 하고 싶은 말")
+                .isbn("9791191043235")
+                .build();
+        Long savedBookId = fakeContainer.bookService.register(userRegisterRequest.getEmail(), bookRegisterRequest);
+
+//        도서 대출
+        fakeContainer.bookService.lend(userRegisterRequest.getEmail(), savedBookId);
+
+//        도서 반납
+        fakeContainer.bookService.returnBook(userRegisterRequest.getEmail(), savedBookId);
+
+//        다른 유저의 도서 대출
+        fakeContainer.bookService.lend(userRegisterRequest2.getEmail(), savedBookId);
+
+//        도서 반납
+        assertThatThrownBy(() ->
+                fakeContainer.bookService.returnBook(userRegisterRequest.getEmail(), savedBookId)
+        )
+                .isInstanceOf(BookException.class)
+                .hasMessage(LENT_HISTORY_NOT_FOUND.getMessage());
+    }
 }

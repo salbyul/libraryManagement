@@ -105,4 +105,37 @@ class BookControllerTest {
         assertThat(lentHistory.getBook()).isEqualTo(book);
         assertThat(book.getState()).isEqualTo(BookState.LENT);
     }
+
+    @Test
+    @DisplayName("도서 반납 성공")
+    void returnBook() {
+        FakeContainer fakeContainer = new FakeContainer();
+
+//        유저 생성
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder()
+                .email("a@a.com")
+                .build();
+        fakeContainer.userService.register(userRegisterRequest);
+
+//        도서 생성
+        BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
+                .name("너에게 하고 싶은 말")
+                .isbn("9791191043235")
+                .build();
+        Long savedBookId = fakeContainer.bookService.register(userRegisterRequest.getEmail(), bookRegisterRequest);
+
+//        도서 대출
+        fakeContainer.bookController.lend(savedBookId, userRegisterRequest.getEmail());
+
+//        도서 반납
+        fakeContainer.bookController.returnBook(savedBookId, userRegisterRequest.getEmail());
+
+//        검증
+        Book book = fakeContainer.bookRepository.findById(savedBookId)
+                .orElseThrow(() -> new BookException(BOOK_NOT_FOUND));
+        LentHistory lentHistory = fakeContainer.lentHistoryRepository.findByBookId(savedBookId).get(0);
+
+        assertThat(book.isLent()).isFalse();
+        assertThat(lentHistory.getReturnDate()).isNotNull();
+    }
 }
