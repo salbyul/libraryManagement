@@ -1,6 +1,7 @@
 package com.example.libraryManagement.book.controller;
 
 import com.example.libraryManagement.book.domain.Book;
+import com.example.libraryManagement.book.domain.BookState;
 import com.example.libraryManagement.book.domain.LentHistory;
 import com.example.libraryManagement.book.dto.request.BookRegisterRequest;
 import com.example.libraryManagement.book.exception.BookException;
@@ -48,5 +49,6 @@ class LentHistoryControllerTest {
                 .orElseThrow(() -> new BookException(BOOK_NOT_FOUND));
         assertThat(lentHistory.getUser()).isEqualTo(user);
         assertThat(lentHistory.getBook()).isEqualTo(book);
+        assertThat(book.getState()).isEqualTo(BookState.LENT);
     }
 }
