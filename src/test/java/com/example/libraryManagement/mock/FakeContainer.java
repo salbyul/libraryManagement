@@ -1,10 +1,14 @@
 package com.example.libraryManagement.mock;
 
 import com.example.libraryManagement.book.controller.BookController;
+import com.example.libraryManagement.book.controller.LentHistoryController;
 import com.example.libraryManagement.book.service.BookService;
+import com.example.libraryManagement.book.service.LentHistoryService;
 import com.example.libraryManagement.book.service.port.BookRepository;
+import com.example.libraryManagement.book.service.port.LentHistoryRepository;
 import com.example.libraryManagement.book.validator.BookValidator;
 import com.example.libraryManagement.mock.repository.BookFakeRepository;
+import com.example.libraryManagement.mock.repository.LentHistoryFakeRepository;
 import com.example.libraryManagement.mock.repository.UserFakeRepository;
 import com.example.libraryManagement.user.controller.UserController;
 import com.example.libraryManagement.user.service.UserService;
@@ -23,10 +27,15 @@ public class FakeContainer {
     public final BookController bookController;
     public final BookValidator bookValidator;
 
+    public final LentHistoryService lentHistoryService;
+    public final LentHistoryRepository lentHistoryRepository;
+    public final LentHistoryController lentHistoryController;
+
     public FakeContainer() {
 //        Repository
         this.userRepository = new UserFakeRepository();
         this.bookRepository = new BookFakeRepository();
+        this.lentHistoryRepository = new LentHistoryFakeRepository();
 
 //        Validator
         this.userValidator = UserValidator.builder()
@@ -46,6 +55,11 @@ public class FakeContainer {
                 .bookRepository(this.bookRepository)
                 .bookValidator(this.bookValidator)
                 .build();
+        this.lentHistoryService = LentHistoryService.builder()
+                .lentHistoryRepository(this.lentHistoryRepository)
+                .userRepository(this.userRepository)
+                .bookRepository(this.bookRepository)
+                .build();
 
 //        Controller
         this.userController = UserController.builder()
@@ -54,6 +68,8 @@ public class FakeContainer {
         this.bookController = BookController.builder()
                 .bookService(this.bookService)
                 .build();
-
+        this.lentHistoryController = LentHistoryController.builder()
+                .lentHistoryService(this.lentHistoryService)
+                .build();
     }
 }
