@@ -27,9 +27,9 @@ public class FakeContainer {
     public final BookController bookController;
     public final BookValidator bookValidator;
 
-    public final LentHistoryService lentHistoryService;
+//    public final LentHistoryService lentHistoryService;
     public final LentHistoryRepository lentHistoryRepository;
-    public final LentHistoryController lentHistoryController;
+//    public final LentHistoryController lentHistoryController;
 
     public FakeContainer() {
 //        Repository
@@ -54,12 +54,13 @@ public class FakeContainer {
                 .userRepository(this.userRepository)
                 .bookRepository(this.bookRepository)
                 .bookValidator(this.bookValidator)
-                .build();
-        this.lentHistoryService = LentHistoryService.builder()
                 .lentHistoryRepository(this.lentHistoryRepository)
-                .userRepository(this.userRepository)
-                .bookRepository(this.bookRepository)
                 .build();
+//        this.lentHistoryService = LentHistoryService.builder()
+//                .lentHistoryRepository(this.lentHistoryRepository)
+//                .userRepository(this.userRepository)
+//                .bookRepository(this.bookRepository)
+//                .build();
 
 //        Controller
         this.userController = UserController.builder()
@@ -68,8 +69,8 @@ public class FakeContainer {
         this.bookController = BookController.builder()
                 .bookService(this.bookService)
                 .build();
-        this.lentHistoryController = LentHistoryController.builder()
-                .lentHistoryService(this.lentHistoryService)
-                .build();
+//        this.lentHistoryController = LentHistoryController.builder()
+//                .lentHistoryService(this.lentHistoryService)
+//                .build();
     }
 }

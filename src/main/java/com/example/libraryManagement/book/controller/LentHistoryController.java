@@ -14,13 +14,4 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/lent-history")
 public class LentHistoryController {
 
-    private final LentHistoryService lentHistoryService;
-
-    @SuppressWarnings("UastIncorrectHttpHeaderInspection")
-    @PostMapping
-    public ApiResponse lend(final Long bookId, @RequestHeader("Library-Lend-Email") final String email) {
-        Long savedId = lentHistoryService.lend(email, bookId);
-        return ApiResponse.generate()
-                .put("id", savedId);
-    }
 }

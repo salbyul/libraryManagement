@@ -35,4 +35,11 @@ public class BookController {
         bookService.modify(bookId, email, bookModificationRequest);
         return ApiResponse.generate();
     }
+
+    @SuppressWarnings("UastIncorrectHttpHeaderInspection")
+    @PostMapping("/lend/{id}")
+    public ApiResponse lend(@PathVariable(name = "id") final Long bookId, @RequestHeader("Library-Lend-Email") final String email) {
+        bookService.lend(email, bookId);
+        return ApiResponse.generate();
+    }
 }

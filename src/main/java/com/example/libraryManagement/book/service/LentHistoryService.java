@@ -19,30 +19,5 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class LentHistoryService {
 
-    private final LentHistoryRepository lentHistoryRepository;
-    private final UserRepository userRepository;
-    private final BookRepository bookRepository;
 
-    @Transactional
-    public Long lend(final String email, final Long bookId) {
-        User user = getUserByEmail(email);
-        Book book = getBookByBookId(bookId);
-        book.lend();
-
-        LentHistory lentHistory = LentHistory.builder()
-                .user(user)
-                .book(book)
-                .build();
-        return lentHistoryRepository.save(lentHistory).getLentHistoryId();
-    }
-
-    private User getUserByEmail(final String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new BookException(ErrorType.USER_NOT_FOUND));
-    }
-
-    private Book getBookByBookId(final Long bookId) {
-        return bookRepository.findById(bookId)
-                .orElseThrow(() -> new BookException(ErrorType.BOOK_NOT_FOUND));
-    }
 }

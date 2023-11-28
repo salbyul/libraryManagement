@@ -4,8 +4,10 @@ import com.example.libraryManagement.book.domain.LentHistory;
 import com.example.libraryManagement.book.service.port.LentHistoryRepository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class LentHistoryFakeRepository implements LentHistoryRepository {
 
@@ -29,5 +31,12 @@ public class LentHistoryFakeRepository implements LentHistoryRepository {
         return data.values().stream()
                 .filter(l -> l.getLentHistoryId().equals(lentHistoryId))
                 .findFirst();
+    }
+
+    @Override
+    public List<LentHistory> findByBookId(final Long bookId) {
+        return data.values().stream()
+                .filter(lentHistory -> lentHistory.getBook().getBookId().equals(bookId))
+                .collect(Collectors.toList());
     }
 }

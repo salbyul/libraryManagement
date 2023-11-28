@@ -6,6 +6,7 @@ import com.example.libraryManagement.book.service.port.LentHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -22,5 +23,10 @@ public class LentHistoryRepositoryImpl implements LentHistoryRepository {
     @Override
     public Optional<LentHistory> findByLentHistoryId(final Long lentHistoryId) {
         return lentHistoryJpaRepository.findById(lentHistoryId);
+    }
+
+    @Override
+    public List<LentHistory> findByBookId(final Long bookId) {
+        return lentHistoryJpaRepository.findByBookId(bookId);
     }
 }
