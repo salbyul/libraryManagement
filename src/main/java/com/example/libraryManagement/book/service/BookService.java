@@ -2,12 +2,12 @@ package com.example.libraryManagement.book.service;
 
 import com.example.libraryManagement.book.domain.Book;
 import com.example.libraryManagement.book.domain.BookState;
+import com.example.libraryManagement.book.dto.request.BookModificationRequest;
 import com.example.libraryManagement.book.dto.request.BookRegisterRequest;
 import com.example.libraryManagement.book.exception.BookException;
 import com.example.libraryManagement.book.service.port.BookRepository;
 import com.example.libraryManagement.book.validator.BookValidator;
 import com.example.libraryManagement.user.domain.User;
-import com.example.libraryManagement.user.exception.UserException;
 import com.example.libraryManagement.user.service.port.UserRepository;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +27,8 @@ public class BookService {
     private final BookValidator bookValidator;
 
     @Transactional
-    public Long register(final BookRegisterRequest bookRegisterRequest) {
-        User registrant = getUserByEmail(bookRegisterRequest.getRegistrantEmail());
+    public Long register(final String registrantEmail, final BookRegisterRequest bookRegisterRequest) {
+        User registrant = getUserByEmail(registrantEmail);
 
         Book book = Book.builder()
                 .name(bookRegisterRequest.getName())
@@ -36,12 +36,29 @@ public class BookService {
                 .registrant(registrant)
                 .state(BookState.LENDABLE)
                 .build();
-        bookValidator.validateRegister(book);
+        bookValidator.validateForRegister(book);
         return bookRepository.save(book).getBookId();
     }
 
     private User getUserByEmail(final String registrantEmail) {
         return userRepository.findByEmail(registrantEmail)
                 .orElseThrow(() -> new BookException(USER_NOT_FOUND));
+    }
+
+    @Transactional
+    public void modify(final Long bookId, final String email, final BookModificationRequest bookModificationRequest) {
+        Book book = getBookByBookId(bookId);
+        User user = getUserByEmail(email);
+
+        if (!book.isRightUser(user)) {
+            throw new BookException(BOOK_FORBIDDEN);
+        }
+        book.update(bookModificationRequest.getName(), bookModificationRequest.getIsbn());
+        bookValidator.validateForModification(book);
+    }
+
+    private Book getBookByBookId(final Long bookId) {
+        return bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookException(BOOK_NOT_FOUND));
     }
 }

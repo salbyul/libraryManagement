@@ -38,4 +38,11 @@ public class BookFakeRepository implements BookRepository {
                 .filter(book -> book.getIsbn().equals(isbn))
                 .findFirst();
     }
+
+    @Override
+    public Optional<Book> findById(final Long bookId) {
+        return data.values().stream()
+                .filter(book -> book.getBookId().equals(bookId))
+                .findFirst();
+    }
 }
