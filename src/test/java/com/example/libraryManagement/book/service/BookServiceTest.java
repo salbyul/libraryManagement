@@ -26,12 +26,11 @@ class BookServiceTest {
         fakeContainer.userService.register(userRegisterRequest);
 
         BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
-                .registrantEmail("a@a.com")
                 .name("너에게 하고 싶은 말")
                 .isbn("9791191043235")
                 .build();
 
-        fakeContainer.bookService.register(bookRegisterRequest);
+        fakeContainer.bookService.register(userRegisterRequest.getEmail(), bookRegisterRequest);
     }
 
     @Test
@@ -40,13 +39,12 @@ class BookServiceTest {
         FakeContainer fakeContainer = new FakeContainer();
 
         BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
-                .registrantEmail("a@a.com")
                 .name("너에게 하고 싶은 말")
                 .isbn("9791191043235")
                 .build();
 
         assertThatThrownBy(() ->
-                fakeContainer.bookService.register(bookRegisterRequest)
+                fakeContainer.bookService.register("a@a.com", bookRegisterRequest)
         )
                 .isInstanceOf(BookException.class)
                 .hasMessage(USER_NOT_FOUND.getMessage());
@@ -65,11 +63,10 @@ class BookServiceTest {
 
 //        도서 등록
         BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
-                .registrantEmail("a@a.com")
                 .name("너에게 하고 싶은 말")
                 .isbn("9791191043235")
                 .build();
-        Long savedBookId = fakeContainer.bookService.register(bookRegisterRequest);
+        Long savedBookId = fakeContainer.bookService.register(userRegisterRequest.getEmail(), bookRegisterRequest);
 
 //        도서 수정
         BookModificationRequest bookModificationRequest = BookModificationRequest.builder()
@@ -98,11 +95,10 @@ class BookServiceTest {
 
 //        도서 등록
         BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
-                .registrantEmail("a@a.com")
                 .name("너에게 하고 싶은 말")
                 .isbn("9791191043235")
                 .build();
-        fakeContainer.bookService.register(bookRegisterRequest);
+        fakeContainer.bookService.register(userRegisterRequest.getEmail(), bookRegisterRequest);
 
 //        도서 수정
         BookModificationRequest bookModificationRequest = BookModificationRequest.builder()
@@ -134,11 +130,10 @@ class BookServiceTest {
 
 //        도서 등록
         BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
-                .registrantEmail("a@a.com")
                 .name("너에게 하고 싶은 말")
                 .isbn("9791191043235")
                 .build();
-        Long savedBookId = fakeContainer.bookService.register(bookRegisterRequest);
+        Long savedBookId = fakeContainer.bookService.register(userRegisterRequest.getEmail(), bookRegisterRequest);
 
 //        도서 수정
         BookModificationRequest bookModificationRequest = BookModificationRequest.builder()

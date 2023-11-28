@@ -4,7 +4,6 @@ import com.example.libraryManagement.book.domain.Book;
 import com.example.libraryManagement.book.dto.request.BookModificationRequest;
 import com.example.libraryManagement.book.dto.request.BookRegisterRequest;
 import com.example.libraryManagement.book.exception.BookException;
-import com.example.libraryManagement.common.response.error.ErrorType;
 import com.example.libraryManagement.mock.FakeContainer;
 import com.example.libraryManagement.user.domain.User;
 import com.example.libraryManagement.user.dto.request.UserRegisterRequest;
@@ -30,11 +29,10 @@ class BookControllerTest {
 
 //        도서 생성
         BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
-                .registrantEmail("a@a.com")
                 .name("너에게 하고 싶은 말")
                 .isbn("9791191043235")
                 .build();
-        fakeContainer.bookController.register(bookRegisterRequest);
+        fakeContainer.bookController.register(userRegisterRequest.getEmail(), bookRegisterRequest);
         User registrant = fakeContainer.userRepository.findByEmail("a@a.com")
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
@@ -54,15 +52,14 @@ class BookControllerTest {
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder()
                 .email("a@a.com")
                 .build();
-        Long savedUserId = fakeContainer.userService.register(userRegisterRequest);
+        fakeContainer.userService.register(userRegisterRequest);
 
 //        도서 등록
         BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
-                .registrantEmail(userRegisterRequest.getEmail())
                 .name("너에게 하고 싶은 말")
                 .isbn("9791191043235")
                 .build();
-        Long savedBookId = fakeContainer.bookService.register(bookRegisterRequest);
+        Long savedBookId = fakeContainer.bookService.register(userRegisterRequest.getEmail(), bookRegisterRequest);
 
 //        도서 수정
         BookModificationRequest bookModificationRequest = BookModificationRequest.builder()

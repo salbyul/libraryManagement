@@ -19,9 +19,10 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping
-    public ApiResponse register(@RequestBody final BookRegisterRequest bookRegisterRequest) { // FIXME: 2023/11/28 registrant Email 객체와 분리하기
+    public ApiResponse register(@RequestHeader(name = "Library-Registrant-Email") final String registrantEmail,
+                                @RequestBody final BookRegisterRequest bookRegisterRequest) {
         log.info("{}", bookRegisterRequest);
-        Long savedId = bookService.register(bookRegisterRequest);
+        Long savedId = bookService.register(registrantEmail, bookRegisterRequest);
         return ApiResponse.generate()
                 .put("id", savedId);
     }

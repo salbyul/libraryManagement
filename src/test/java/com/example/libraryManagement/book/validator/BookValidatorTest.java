@@ -124,11 +124,10 @@ class BookValidatorTest {
 
 //        도서 생성
         BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
-                .registrantEmail(user.getEmail())
                 .name("너에게 하고 싶은 말")
                 .isbn("100000")
                 .build();
-        Long savedBookId = fakeContainer.bookService.register(bookRegisterRequest);
+        Long savedBookId = fakeContainer.bookService.register(user.getEmail(), bookRegisterRequest);
 
 //        도서 수정
         Book book = fakeContainer.bookRepository.findById(savedBookId)
@@ -151,12 +150,11 @@ class BookValidatorTest {
 
 //        도서 등록
         BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
-                .registrantEmail(user.getEmail())
                 .name("너에게 하고 싶은 말")
                 .isbn("100000")
                 .build();
 
-        Long savedBookId = fakeContainer.bookService.register(bookRegisterRequest);
+        Long savedBookId = fakeContainer.bookService.register(user.getEmail(), bookRegisterRequest);
 
 //        도서 수정
         Book book = fakeContainer.bookRepository.findById(savedBookId)
@@ -183,18 +181,16 @@ class BookValidatorTest {
 
 //        도서 등록
         BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
-                .registrantEmail(user.getEmail())
                 .name("너에게 하고 싶은 말")
                 .isbn("100000")
                 .build();
 
         BookRegisterRequest bookRegisterRequest2 = BookRegisterRequest.builder()
-                .registrantEmail(user.getEmail())
                 .name("너에게 하고 싶은 말")
                 .isbn("100")
                 .build();
-        fakeContainer.bookService.register(bookRegisterRequest);
-        Long savedBookId = fakeContainer.bookService.register(bookRegisterRequest2);
+        fakeContainer.bookService.register(user.getEmail(), bookRegisterRequest);
+        Long savedBookId = fakeContainer.bookService.register(user.getEmail(), bookRegisterRequest2);
 
 //        도서 수정
         Book book = fakeContainer.bookRepository.findById(savedBookId)

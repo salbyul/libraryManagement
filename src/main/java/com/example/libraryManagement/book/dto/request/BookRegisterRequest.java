@@ -8,15 +8,13 @@ import lombok.*;
 @AllArgsConstructor
 public class BookRegisterRequest {
 
-    private String registrantEmail;
     private String name;
     private String isbn;
 
     @Override
     public String toString() {
         return "BookRegisterRequest{" +
-                "registrantEmail='" + registrantEmail + '\'' +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", isbn='" + isbn + '\'' +
                 '}';
     }

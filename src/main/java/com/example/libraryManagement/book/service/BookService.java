@@ -27,8 +27,8 @@ public class BookService {
     private final BookValidator bookValidator;
 
     @Transactional
-    public Long register(final BookRegisterRequest bookRegisterRequest) {
-        User registrant = getUserByEmail(bookRegisterRequest.getRegistrantEmail());
+    public Long register(final String registrantEmail, final BookRegisterRequest bookRegisterRequest) {
+        User registrant = getUserByEmail(registrantEmail);
 
         Book book = Book.builder()
                 .name(bookRegisterRequest.getName())
