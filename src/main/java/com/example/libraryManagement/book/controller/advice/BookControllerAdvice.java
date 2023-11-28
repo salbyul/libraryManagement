@@ -18,6 +18,7 @@ public class BookControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ErrorResponse handleGlobalException(final Exception e) {
+        e.printStackTrace();
         return ErrorResponse.generateAboutGlobal(ErrorType.UNKNOWN_ERROR);
     }
 }

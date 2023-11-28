@@ -6,6 +6,7 @@ import com.example.libraryManagement.book.service.port.LentHistoryRepository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class LentHistoryFakeRepository implements LentHistoryRepository {
@@ -30,5 +31,15 @@ public class LentHistoryFakeRepository implements LentHistoryRepository {
         return data.values().stream()
                 .filter(lentHistory -> lentHistory.getBook().getBookId().equals(bookId))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<LentHistory> findNotReturnedByUserIdAndBookId(final Long userId, final Long bookId) {
+        return data.values().stream()
+                .filter(lentHistory ->
+                        lentHistory.getUser().getUserId().equals(userId) &&
+                        lentHistory.getBook().getBookId().equals(bookId) &&
+                        lentHistory.getReturnDate() == null)
+                .findFirst();
     }
 }

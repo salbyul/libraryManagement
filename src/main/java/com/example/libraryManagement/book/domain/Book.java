@@ -53,6 +53,10 @@ public class Book {
         this.state = BookState.LENT;
     }
 
+    public void returnBook() {
+        this.state = BookState.LENDABLE;
+    }
+
     @PrePersist
     public void prePersist() {
         this.generatedDate = LocalDateTime.now();

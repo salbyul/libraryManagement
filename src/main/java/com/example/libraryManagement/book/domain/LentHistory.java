@@ -33,6 +33,10 @@ public class LentHistory {
     @Column(name = "return_date")
     private LocalDateTime returnDate;
 
+    public void returnBook() {
+        this.returnDate = LocalDateTime.now();
+    }
+
     @PrePersist
     public void prePersist() {
         this.lentDate = LocalDateTime.now();

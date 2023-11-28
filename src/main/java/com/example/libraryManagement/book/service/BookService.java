@@ -81,4 +81,17 @@ public class BookService {
                 .build();
         lentHistoryRepository.save(lentHistory);
     }
+
+    @Transactional
+    public void returnBook(final String email, final Long bookId) {
+        User user = getUserByEmail(email);
+        Book book = getBookByBookId(bookId);
+        if (!book.isLent()) {
+            throw new BookException(BOOK_NOT_LEND);
+        }
+        book.returnBook();
+        LentHistory lentHistory = lentHistoryRepository.findNotReturnedByUserIdAndBookId(user.getUserId(), bookId)
+                .orElseThrow(() -> new BookException(LENT_HISTORY_NOT_FOUND));
+        lentHistory.returnBook();
+    }
 }
