@@ -6,7 +6,6 @@ import com.example.libraryManagement.book.service.port.LentHistoryRepository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class LentHistoryFakeRepository implements LentHistoryRepository {
@@ -24,13 +23,6 @@ public class LentHistoryFakeRepository implements LentHistoryRepository {
         entity.prePersist();
         data.put(entity.getLentHistoryId(), entity);
         return entity;
-    }
-
-    @Override
-    public Optional<LentHistory> findByLentHistoryId(final Long lentHistoryId) {
-        return data.values().stream()
-                .filter(l -> l.getLentHistoryId().equals(lentHistoryId))
-                .findFirst();
     }
 
     @Override

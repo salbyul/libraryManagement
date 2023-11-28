@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -18,11 +17,6 @@ public class LentHistoryRepositoryImpl implements LentHistoryRepository {
     @Override
     public LentHistory save(final LentHistory lentHistory) {
         return lentHistoryJpaRepository.save(lentHistory);
-    }
-
-    @Override
-    public Optional<LentHistory> findByLentHistoryId(final Long lentHistoryId) {
-        return lentHistoryJpaRepository.findById(lentHistoryId);
     }
 
     @Override
