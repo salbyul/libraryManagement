@@ -42,7 +42,7 @@ public class User {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         final User user = (User) o;
-        return Objects.equals(getEmail(), user.getEmail());
+        return getUserId() != null && Objects.equals(getUserId(), user.getUserId());
     }
 
     @Override

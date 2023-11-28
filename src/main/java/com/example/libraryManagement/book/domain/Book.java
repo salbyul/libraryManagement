@@ -3,8 +3,10 @@ package com.example.libraryManagement.book.domain;
 import com.example.libraryManagement.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -52,5 +54,19 @@ public class Book {
     @PreUpdate
     public void preUpdate() {
         this.modifiedDate = LocalDateTime.now();
+    }
+
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        final Book book = (Book) o;
+        return getBookId() != null && Objects.equals(getBookId(), book.getBookId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getBookId(), getName(), getIsbn(), getState(), getRegistrant(), getGeneratedDate(), getModifiedDate());
     }
 }
