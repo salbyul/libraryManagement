@@ -27,7 +27,9 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse modify(@PathVariable(name = "id") final Long bookId, @RequestBody final BookModificationRequest bookModificationRequest, @RequestHeader(name = "Library-Registrant-Email") String email) {
+    public ApiResponse modify(@PathVariable(name = "id") final Long bookId,
+                              @RequestBody final BookModificationRequest bookModificationRequest,
+                              @RequestHeader(name = "Library-Registrant-Email") String email) {
         log.info("{}", bookModificationRequest);
         bookService.modify(bookId, email, bookModificationRequest);
         return ApiResponse.generate();
