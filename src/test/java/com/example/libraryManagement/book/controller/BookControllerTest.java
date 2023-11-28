@@ -1,6 +1,7 @@
 package com.example.libraryManagement.book.controller;
 
 import com.example.libraryManagement.book.domain.Book;
+import com.example.libraryManagement.book.dto.request.BookModificationRequest;
 import com.example.libraryManagement.book.dto.request.BookRegisterRequest;
 import com.example.libraryManagement.book.exception.BookException;
 import com.example.libraryManagement.common.response.error.ErrorType;
@@ -20,11 +21,14 @@ class BookControllerTest {
     @DisplayName("도서 등록 성공")
     void register() {
         FakeContainer fakeContainer = new FakeContainer();
+
+//        유저 생성
         UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder()
                 .email("a@a.com")
                 .build();
         fakeContainer.userService.register(userRegisterRequest);
 
+//        도서 생성
         BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
                 .registrantEmail("a@a.com")
                 .name("너에게 하고 싶은 말")
@@ -39,5 +43,32 @@ class BookControllerTest {
         assertThat(book.getName()).isEqualTo("너에게 하고 싶은 말");
         assertThat(book.getIsbn()).isEqualTo("9791191043235");
         assertThat((book.getRegistrant())).isEqualTo(registrant);
+    }
+
+    @Test
+    @DisplayName("도서 수정 성공")
+    void modify() {
+        FakeContainer fakeContainer = new FakeContainer();
+
+//        유저 생성
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder()
+                .email("a@a.com")
+                .build();
+        Long savedUserId = fakeContainer.userService.register(userRegisterRequest);
+
+//        도서 등록
+        BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
+                .registrantEmail(userRegisterRequest.getEmail())
+                .name("너에게 하고 싶은 말")
+                .isbn("9791191043235")
+                .build();
+        Long savedBookId = fakeContainer.bookService.register(bookRegisterRequest);
+
+//        도서 수정
+        BookModificationRequest bookModificationRequest = BookModificationRequest.builder()
+                .name("너에게 하고 싶은 말2")
+                .isbn("10000")
+                .build();
+        fakeContainer.bookController.modify(savedBookId, bookModificationRequest, userRegisterRequest.getEmail());
     }
 }

@@ -3,6 +3,7 @@ package com.example.libraryManagement.user.domain;
 import com.example.libraryManagement.book.domain.Book;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,16 +36,17 @@ public class User {
         this.generatedDate = LocalDateTime.now();
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         final User user = (User) o;
-        return Objects.equals(getEmail(), user.getEmail()) && Objects.equals(getGeneratedDate(), user.getGeneratedDate());
+        return Objects.equals(getEmail(), user.getEmail());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getEmail(), getGeneratedDate());
+        return Objects.hash(getEmail());
     }
 }

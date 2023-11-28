@@ -6,17 +6,15 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class BookRegisterRequest {
+public class BookModificationRequest {
 
-    private String registrantEmail;
     private String name;
     private String isbn;
 
     @Override
     public String toString() {
-        return "BookRegisterRequest{" +
-                "registrantEmail='" + registrantEmail + '\'' +
-                ", name='" + name + '\'' +
+        return "BookModificationRequest{" +
+                "name='" + name + '\'' +
                 ", isbn='" + isbn + '\'' +
                 '}';
     }

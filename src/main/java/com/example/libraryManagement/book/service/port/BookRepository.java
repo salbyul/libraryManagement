@@ -9,4 +9,6 @@ public interface BookRepository {
     Book save(final Book book);
 
     Optional<Book> findByIsbn(final String isbn);
+
+    Optional<Book> findById(final Long bookId);
 }

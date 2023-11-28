@@ -14,7 +14,8 @@ public enum ErrorType {
     BOOK_NOT_FOUND("해당 책이 존재하지 않습니다."),
     BOOK_NAME_EMPTY("책의 이름은 필수입니다."),
     BOOK_ISBN_EMPTY("책의 ISBN은 필수입니다."),
-    BOOK_ISBN_DUPLICATION("책의 ISBN이 중복됩니다.");
+    BOOK_ISBN_DUPLICATION("책의 ISBN이 중복됩니다."),
+    BOOK_FORBIDDEN("권한이 없습니다.");
 
     private final String message;
 

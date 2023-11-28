@@ -34,6 +34,15 @@ public class Book {
     @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
 
+    public boolean isRightUser(final User user) {
+        return registrant.equals(user);
+    }
+
+    public void update(final String name, final String isbn) {
+        this.name = name;
+        this.isbn = isbn;
+    }
+
     @PrePersist
     public void prePersist() {
         this.generatedDate = LocalDateTime.now();

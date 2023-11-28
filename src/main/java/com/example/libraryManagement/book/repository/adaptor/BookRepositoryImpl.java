@@ -23,4 +23,9 @@ public class BookRepositoryImpl implements BookRepository {
     public Optional<Book> findByIsbn(final String isbn) {
         return bookJpaRepository.findByIsbn(isbn);
     }
+
+    @Override
+    public Optional<Book> findById(final Long bookId) {
+        return bookJpaRepository.findById(bookId);
+    }
 }

@@ -19,9 +19,9 @@ public class BookValidator {
 
     private final BookRepository bookRepository;
 
-    public void validateRegister(final Book book) {
+    public void validateForRegister(final Book book) {
         validateName(book.getName());
-        validateIsbn(book.getIsbn());
+        validateIsbnForRegister(book.getIsbn());
     }
 
     private void validateName(final String name) {
@@ -30,7 +30,7 @@ public class BookValidator {
         }
     }
 
-    private void validateIsbn(final String isbn) {
+    private void validateIsbnForRegister(final String isbn) {
         if (isEmpty(isbn)) {
             throw new BookException(BOOK_ISBN_EMPTY);
         }
@@ -42,5 +42,20 @@ public class BookValidator {
 
     private boolean isEmpty(final String value) {
         return !StringUtils.hasText(value);
+    }
+
+    public void validateForModification(final Book book) {
+        validateName(book.getName());
+        validateIsbnForModification(book);
+    }
+
+    private void validateIsbnForModification(final Book book) {
+        if (isEmpty(book.getIsbn())) {
+            throw new BookException(BOOK_ISBN_EMPTY);
+        }
+        Optional<Book> optionalBook = bookRepository.findByIsbn(book.getIsbn());
+        if (optionalBook.isPresent() && !optionalBook.get().equals(book)) {
+            throw new BookException(BOOK_ISBN_DUPLICATION);
+        }
     }
 }
