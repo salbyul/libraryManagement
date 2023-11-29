@@ -1,6 +1,5 @@
 package com.example.libraryManagement.book.service;
 
-import com.example.libraryManagement.book.domain.Book;
 import com.example.libraryManagement.book.domain.LentHistory;
 import com.example.libraryManagement.book.dto.response.LentHistoryResponse;
 import com.example.libraryManagement.book.exception.BookException;
