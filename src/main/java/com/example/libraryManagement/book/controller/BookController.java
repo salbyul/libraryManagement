@@ -39,6 +39,7 @@ public class BookController {
     @SuppressWarnings("UastIncorrectHttpHeaderInspection")
     @PostMapping("/lend/{id}")
     public ApiResponse lend(@PathVariable(name = "id") final Long bookId, @RequestHeader("Library-Lend-Email") final String email) {
+        log.info("lent bookId: {}", bookId);
         bookService.lend(email, bookId);
         return ApiResponse.generate();
     }
@@ -46,6 +47,7 @@ public class BookController {
     @SuppressWarnings("UastIncorrectHttpHeaderInspection")
     @PostMapping("/return/{id}")
     public ApiResponse returnBook(@PathVariable(name = "id") final Long bookId, @RequestHeader("Library-Return-Email") final String email) {
+        log.info("return bookId: {}", bookId);
         bookService.returnBook(email, bookId);
         return ApiResponse.generate();
     }

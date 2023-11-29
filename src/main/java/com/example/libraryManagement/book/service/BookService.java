@@ -73,6 +73,7 @@ public class BookService {
         if (book.isLent()) {
             throw new BookException(ErrorType.BOOK_ALREADY_LENT);
         }
+
         book.lend();
 
         LentHistory lentHistory = LentHistory.builder()
@@ -89,7 +90,9 @@ public class BookService {
         if (!book.isLent()) {
             throw new BookException(BOOK_NOT_LEND);
         }
+
         book.returnBook();
+
         LentHistory lentHistory = lentHistoryRepository.findNotReturnedByUserIdAndBookId(user.getUserId(), bookId)
                 .orElseThrow(() -> new BookException(LENT_HISTORY_NOT_FOUND));
         lentHistory.returnBook();
