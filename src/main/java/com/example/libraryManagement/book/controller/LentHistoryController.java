@@ -19,6 +19,13 @@ public class LentHistoryController {
 
     private final LentHistoryService lentHistoryService;
 
+    /**
+     * 대출 이력 확인 메서드
+     * 특정 도서의 모든 대출 이력을 반환합니다.
+     *
+     * @param bookId 대출 이력을 확인할 도서의 PK
+     * @return 대출 이력 리스트
+     */
     @GetMapping("/books/{id}")
     public ApiResponse getLentHistoryByBookId(@PathVariable("id") final Long bookId) {
         log.info("getLentHistory bookId: {}", bookId);
