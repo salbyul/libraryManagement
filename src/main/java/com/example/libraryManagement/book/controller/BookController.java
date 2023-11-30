@@ -2,12 +2,18 @@ package com.example.libraryManagement.book.controller;
 
 import com.example.libraryManagement.book.dto.request.BookModificationRequest;
 import com.example.libraryManagement.book.dto.request.BookRegisterRequest;
+import com.example.libraryManagement.book.exception.BookException;
 import com.example.libraryManagement.book.service.BookService;
 import com.example.libraryManagement.common.response.ApiResponse;
+import com.example.libraryManagement.common.response.error.ErrorType;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
+
+import static com.example.libraryManagement.common.response.error.ErrorType.*;
 
 @Slf4j
 @RestController
@@ -15,6 +21,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/books")
 public class BookController {
+
+    private final String LIBRARY_REGISTRANT_EMAIL = "Library-Registrant-Email";
+    private final String LIBRARY_LEND_EMAIL = "Library-Lend-Email";
+    private final String LIBRARY_RETURN_EMAIL = "Library-Return-Email";
 
     private final BookService bookService;
 
@@ -27,8 +37,10 @@ public class BookController {
      * @return 저장된 도서의 PK
      */
     @PostMapping
-    public ApiResponse register(@RequestHeader(name = "Library-Registrant-Email") final String registrantEmail,
+    public ApiResponse register(@RequestHeader(name = LIBRARY_REGISTRANT_EMAIL, required = false) final String registrantEmail,
                                 @RequestBody final BookRegisterRequest bookRegisterRequest) {
+        validateHeader(registrantEmail, HEADER_REGISTRANT_EMAIL_NULL);
+
         log.info("{}", bookRegisterRequest);
         Long savedId = bookService.register(registrantEmail, bookRegisterRequest);
         return ApiResponse.generate()
@@ -41,15 +53,17 @@ public class BookController {
      *
      * @param bookId 수정될 도서의 PK
      * @param bookModificationRequest 수정될 정보
-     * @param email 도서의 등록자인지 확인하기 위한 유저의 이메일
+     * @param registrantEmail 도서의 등록자인지 확인하기 위한 유저의 이메일
      * @return 없음
      */
     @PutMapping("/{id}")
     public ApiResponse modify(@PathVariable(name = "id") final Long bookId,
                               @RequestBody final BookModificationRequest bookModificationRequest,
-                              @RequestHeader(name = "Library-Registrant-Email") String email) {
+                              @RequestHeader(name = LIBRARY_REGISTRANT_EMAIL, required = false) String registrantEmail) {
+        validateHeader(registrantEmail, HEADER_REGISTRANT_EMAIL_NULL);
+
         log.info("{}", bookModificationRequest);
-        bookService.modify(bookId, email, bookModificationRequest);
+        bookService.modify(bookId, registrantEmail, bookModificationRequest);
         return ApiResponse.generate();
     }
 
@@ -61,9 +75,11 @@ public class BookController {
      * @param email 대출하는 유저의 이메일
      * @return 없음
      */
-    @SuppressWarnings("UastIncorrectHttpHeaderInspection")
     @PostMapping("/lend/{id}")
-    public ApiResponse lend(@PathVariable(name = "id") final Long bookId, @RequestHeader("Library-Lend-Email") final String email) {
+    public ApiResponse lend(@PathVariable(name = "id") final Long bookId,
+                            @RequestHeader(value = LIBRARY_LEND_EMAIL, required = false) final String email) {
+        validateHeader(email, HEADER_LEND_EMAIL_NULL);
+
         log.info("lent bookId: {}", bookId);
         bookService.lend(email, bookId);
         return ApiResponse.generate();
@@ -77,11 +93,19 @@ public class BookController {
      * @param email 대출한 유저인지 확인하기 위한 유저의 이메일
      * @return 없음
      */
-    @SuppressWarnings("UastIncorrectHttpHeaderInspection")
     @PostMapping("/return/{id}")
-    public ApiResponse returnBook(@PathVariable(name = "id") final Long bookId, @RequestHeader("Library-Return-Email") final String email) {
+    public ApiResponse returnBook(@PathVariable(name = "id") final Long bookId,
+                                  @RequestHeader(value = LIBRARY_RETURN_EMAIL, required = false) final String email) {
+        validateHeader(email, HEADER_RETURN_EMAIL_NULL);
+
         log.info("return bookId: {}", bookId);
         bookService.returnBook(email, bookId);
         return ApiResponse.generate();
+    }
+
+    private void validateHeader(final String value, final ErrorType errorType) {
+        if (Objects.isNull(value)) {
+            throw new BookException(errorType);
+        }
     }
 }

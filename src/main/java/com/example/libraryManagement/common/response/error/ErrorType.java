@@ -4,6 +4,11 @@ public enum ErrorType {
 
     UNKNOWN_ERROR("정의되지 않은 에러입니다."),
 
+//    Header
+    HEADER_REGISTRANT_EMAIL_NULL("Library-Registrant-Email 헤더가 필요합니다."),
+    HEADER_LEND_EMAIL_NULL("Library_Lend_Email 헤더가 필요합니다"),
+    HEADER_RETURN_EMAIL_NULL("Library_Return_Email 헤더가 필요합니다"),
+
     //    User
     USER_NOT_FOUND("해당 유저가 존재하지 않습니다."),
     USER_EMAIL_EMPTY("유저의 이메일은 필수입니다."),
