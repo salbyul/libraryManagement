@@ -41,4 +41,5 @@ jobs:
         host: ${{ secrets.SERVER_HOST }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script_stop: true
-        script: sudo sh /home/ubuntu/backapplication/deploy.sh &
+        script: |
+          sudo sh -x /home/ubuntu/backapplication/deploy.sh &
