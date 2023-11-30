@@ -46,7 +46,7 @@ jobs:
       - name: SCP transfer
         uses: appleboy/scp-action@v0.1.4
         with:
-          host: ${{ secrets.SERVER_ID }}
+          host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           source: "./build/libs/*.jar"
@@ -55,7 +55,7 @@ jobs:
       - name: Execute remote commands
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.SERVER_IP }}
+          host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
