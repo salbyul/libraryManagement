@@ -48,6 +48,24 @@ class BookControllerTest {
     }
 
     @Test
+    @DisplayName("도서 등록 시 이메일 헤더가 존재하지 않을 경우 예외 발생")
+    void registerFailedByNullEmail() {
+        FakeContainer fakeContainer = new FakeContainer();
+
+//        도서 생성
+        BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
+                .name("너에게 하고 싶은 말")
+                .isbn("9791191043235")
+                .build();
+
+        assertThatThrownBy(() ->
+                fakeContainer.bookController.register(null, bookRegisterRequest)
+        )
+                .isInstanceOf(BookException.class)
+                .hasMessage(HEADER_REGISTRANT_EMAIL_NULL.getMessage());
+    }
+
+    @Test
     @DisplayName("도서 수정 성공")
     void modify() {
         FakeContainer fakeContainer = new FakeContainer();
@@ -71,6 +89,36 @@ class BookControllerTest {
                 .isbn("10000")
                 .build();
         fakeContainer.bookController.modify(savedBookId, bookModificationRequest, userRegisterRequest.getEmail());
+    }
+
+    @Test
+    @DisplayName("도서 수정 시 이메일 헤더가 존재하지 않을 경우 예외 발생")
+    void modifyFailedByNullEmail() {
+        FakeContainer fakeContainer = new FakeContainer();
+
+//        유저 생성
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder()
+                .email("a@a.com")
+                .build();
+        fakeContainer.userService.register(userRegisterRequest);
+
+//        도서 등록
+        BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
+                .name("너에게 하고 싶은 말")
+                .isbn("9791191043235")
+                .build();
+        Long savedBookId = fakeContainer.bookService.register(userRegisterRequest.getEmail(), bookRegisterRequest);
+
+//        도서 수정
+        BookModificationRequest bookModificationRequest = BookModificationRequest.builder()
+                .name("너에게 하고 싶은 말2")
+                .isbn("10000")
+                .build();
+        assertThatThrownBy(() ->
+                fakeContainer.bookController.modify(savedBookId, bookModificationRequest, null)
+        )
+                .isInstanceOf(BookException.class)
+                .hasMessage(HEADER_REGISTRANT_EMAIL_NULL.getMessage());
     }
 
     @Test
@@ -107,6 +155,32 @@ class BookControllerTest {
     }
 
     @Test
+    @DisplayName("도서 대출 시 이메일 헤더가 존재하지 않을 경우 예외 발생")
+    void lendFailedByNullEmail() {
+        FakeContainer fakeContainer = new FakeContainer();
+
+//        유저 생성
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder()
+                .email("a@a.com")
+                .build();
+        fakeContainer.userService.register(userRegisterRequest);
+
+//        도서 생성
+        BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
+                .name("너에게 하고 싶은 말")
+                .isbn("9791191043235")
+                .build();
+        Long savedBookId = fakeContainer.bookService.register(userRegisterRequest.getEmail(), bookRegisterRequest);
+
+//        도서 대출
+        assertThatThrownBy(() ->
+                fakeContainer.bookController.lend(savedBookId, null)
+        )
+                .isInstanceOf(BookException.class)
+                .hasMessage(HEADER_LEND_EMAIL_NULL.getMessage());
+    }
+
+    @Test
     @DisplayName("도서 반납 성공")
     void returnBook() {
         FakeContainer fakeContainer = new FakeContainer();
@@ -137,5 +211,34 @@ class BookControllerTest {
 
         assertThat(book.isLent()).isFalse();
         assertThat(lentHistory.getReturnDate()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("도서 반납 시 이메일 헤더가 존재하지 않을 경우 예외 발생")
+    void returnBookFailedByNullEmail() {
+        FakeContainer fakeContainer = new FakeContainer();
+
+//        유저 생성
+        UserRegisterRequest userRegisterRequest = UserRegisterRequest.builder()
+                .email("a@a.com")
+                .build();
+        fakeContainer.userService.register(userRegisterRequest);
+
+//        도서 생성
+        BookRegisterRequest bookRegisterRequest = BookRegisterRequest.builder()
+                .name("너에게 하고 싶은 말")
+                .isbn("9791191043235")
+                .build();
+        Long savedBookId = fakeContainer.bookService.register(userRegisterRequest.getEmail(), bookRegisterRequest);
+
+//        도서 대출
+        fakeContainer.bookController.lend(savedBookId, userRegisterRequest.getEmail());
+
+//        도서 반납
+        assertThatThrownBy(() ->
+                fakeContainer.bookController.returnBook(savedBookId, null)
+        )
+                .isInstanceOf(BookException.class)
+                .hasMessage(HEADER_RETURN_EMAIL_NULL.getMessage());
     }
 }
