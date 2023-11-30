@@ -44,7 +44,9 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           
       - name: SCP transfer
-        run: scp *.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }}:/home/ubuntu/backapplication
+        run: |
+          scp *.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }}:/home/ubuntu/backapplication
+          ${{ secrets.SSH_PASSWORD }}
         
       - name: Execute remote commands
         run: |
