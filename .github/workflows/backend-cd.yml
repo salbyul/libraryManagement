@@ -44,12 +44,21 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           
       - name: SCP transfer
-        run: |
-          scp *.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }}:/home/ubuntu/backapplication
-          ${{ secrets.SSH_PASSWORD }}
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SERVER_ID }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "./build/libs/*.jar"
+          target: "/home/ubuntu/backapplication"
         
       - name: Execute remote commands
-        run: |
-          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }} "fuser -k 8080/tcp"
-          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SERVER_IP }} "nohup java -jar /home/ubuntu/backapplication/*.jar &"
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            fuser -k 8080/tcp
+            nohup java -jar /home/ubuntu/backapplication/*.jar &
         
