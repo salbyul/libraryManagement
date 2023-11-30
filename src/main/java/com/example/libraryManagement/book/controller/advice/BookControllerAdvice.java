@@ -13,7 +13,7 @@ public class BookControllerAdvice {
 
     @ExceptionHandler(BookException.class)
     public ErrorResponse handleBookException(final BookException e) {
-        return ErrorResponse.generate(BOOK, e.getErrorType());
+        return ErrorResponse.generate(BOOK, e.getErrorType(), e.getDateTime());
     }
 
     @ExceptionHandler(Exception.class)

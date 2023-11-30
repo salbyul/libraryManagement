@@ -13,7 +13,7 @@ public class UserControllerAdvice {
 
     @ExceptionHandler(UserException.class)
     public ErrorResponse handleUserException(final UserException e) {
-        return ErrorResponse.generate(USER, e.getErrorType());
+        return ErrorResponse.generate(USER, e.getErrorType(), e.getDateTime());
     }
 
     @ExceptionHandler(Exception.class)
